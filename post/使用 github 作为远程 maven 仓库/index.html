@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>使用 github 作为远程 maven 仓库 | hiraemon</title>
+<meta name="description" content="三人行必有我师">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://hiraemon.github.io/favicon.ico?v=1565163135266">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://hiraemon.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://hiraemon.github.io">
+        <img src="https://hiraemon.github.io/images/avatar.png?v=1565163135266" class="site-logo">
+        <h1 class="site-title">hiraemon</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      三人行必有我师
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://hiraemon.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">使用 github 作为远程 maven 仓库</h2>
+            <div class="post-date">2019-08-07</div>
+            
+            <div class="post-content">
+              <h1 id="使用-github-作为远程-maven-仓库">使用 github 作为远程 maven 仓库</h1>
+<ol>
+<li>
+<h6 id="jar-包部署-maven-仓库-先将-jar-deploy-到本地">jar 包部署 maven 仓库 :  先将 jar deploy 到本地</h6>
+<blockquote>
+<p>maven 可以通过 http, ftp, ssh 等 deploy 到远程服务器，也可以 deploy 到本地文件系统里</p>
+<p>如果有多个jar 可以 deploy 到同一目录 push 到同一仓库</p>
+</blockquote>
+</li>
+</ol>
+<pre><code>mvn deploy:deploy-file \ 
+ -Dmaven.test.skip=true \ 
+ -Dfile=D:\alipay-sdk-java-3.7.110.ALL.jar \
+ -DgroupId=com.alipay.sdk 
+ -DartifactId=alipay-sdk-java 
+ -Dversion=3.7.110.ALL 
+ -Dpackaging=jar 
+ -DrepositoryId=marstark 
+ -Durl=file://D:/maven-repo 
+</code></pre>
+<ol start="2">
+<li>
+<h6 id="推送到-github-仓库">推送到 github 仓库</h6>
+</li>
+</ol>
+<pre><code class="language-shell">cd /maven-repo
+git init
+git add .
+git commit -m 'com.alipay.sdk:alipay-sdk-java:3.7.110.ALL'
+git remote add origin https://github.com/xxx/maven-repo.git
+git add
+git push origin master
+</code></pre>
+<ol start="3">
+<li>
+<h6 id="如何使用">如何使用</h6>
+</li>
+</ol>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alipay.sdk&lt;/groupId&gt;
+        &lt;artifactId&gt;alipay-sdk-java&lt;/artifactId&gt;
+        &lt;version&gt;3.7.110.ALL&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+
+
+&lt;repositories&gt;
+    &lt;!-- 配置仓库地址 --&gt;
+    &lt;repository&gt;
+        &lt;id&gt;mvn-repo&lt;/id&gt;
+        &lt;url&gt;https://raw.github.com/xxx/maven-repo/master&lt;/url&gt;
+        &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+            &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+        &lt;/snapshots&gt;
+    &lt;/repository&gt;
+    &lt;!-- 直接使用本地仓库:可以这样配置 --&gt;
+    &lt;repository&gt;
+        &lt;id&gt;local-repo&lt;/id&gt;
+        &lt;url&gt;file://D:/maven-repo&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;	
+</code></pre>
+<h6 id="4-源码部署-maven-仓库">4. 源码部署 maven 仓库</h6>
+<p>使用 maven 发布插件 <code>maven-deploy-plugin</code> 生成本地仓库文件</p>
+<blockquote>
+<p>pom.xml 中可以通过 ${} 语法取到相应属性值,如: ${project.build.directory}</p>
+</blockquote>
+<pre><code class="language-xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-deploy-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.8.1&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;!-- 选择本地路径 --&gt;
+        &lt;altDeploymentRepository&gt;
+            internal.repo::default::file:D:/maven-repo
+        &lt;/altDeploymentRepository&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+</code></pre>
+<p>或者这样配置</p>
+<pre><code class="language-xml">&lt;distributionManagement&gt;
+    &lt;repository&gt;
+        &lt;id&gt;local-repo&lt;/id&gt;
+        &lt;url&gt;file://D:/maven-repo&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/distributionManagement&gt;
+</code></pre>
+<p>将本地仓库 push 到 github .</p>
+<p>同时生成 source 包,添加以下 plugin</p>
+<pre><code class="language-xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-source-plugin&lt;/artifactId&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;id&gt;attach-sources&lt;/id&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;jar&lt;/goal&gt;
+            &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+<h6 id="更多">更多</h6>
+<hr>
+<p>通过 <code>site-maven-plugin</code> 插件上传到  github ,在 项目的 pom.xml 中添加</p>
+<pre><code class="language-xml">&lt;plugin&gt;
+    &lt;groupId&gt;com.github.github&lt;/groupId&gt;
+    &lt;artifactId&gt;site-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;0.12&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;message&gt;Maven artifacts for ${project.version}&lt;/message&gt;
+        &lt;noJekyll&gt;true&lt;/noJekyll&gt;
+        &lt;!-- 本地仓库路径 --&gt;
+        &lt;outputDirectory&gt;D:/maven-repo&lt;/outputDirectory&gt;
+        &lt;branch&gt;refs/heads/master&lt;/branch&gt;
+        &lt;includes&gt;
+            &lt;include&gt;**/*&lt;/include&gt;
+        &lt;/includes&gt;
+        &lt;!--  https://github.com/settings/profile &gt;&gt; Public profile  &gt;&gt; set Name [xxx] &gt;&gt; Update Profile   --&gt;
+        &lt;repositoryOwner&gt;${Name}&lt;/repositoryOwner&gt;
+        &lt;!-- github 仓库名称 --&gt;
+        &lt;repositoryName&gt;maven-repo&lt;/repositoryName&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;site&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;phase&gt;deploy&lt;/phase&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+<p>在 maven 配置文件 setting.xml 添加</p>
+<pre><code class="language-xml">&lt;servers&gt;
+    &lt;server&gt;
+        &lt;id&gt;github&lt;/id&gt;
+        &lt;username&gt;marstark&lt;/username&gt;
+        &lt;password&gt;password&lt;/password&gt;
+    &lt;/server&gt;
+&lt;/servers&gt;
+</code></pre>
+<p>执行</p>
+<pre><code class="language-shell">mvn clean deploy
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://hiraemon.github.io/tag/Jmvm7WlTG" class="tag">
+                    maven
+                  </a>
+                
+              </div>
+            
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
