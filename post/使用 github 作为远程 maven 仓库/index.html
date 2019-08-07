@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://hiraemon.github.io/favicon.ico?v=1565163281568">
+<link rel="shortcut icon" href="https://hiraemon.github.io/favicon.ico?v=1565163910577">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://hiraemon.github.io/styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://hiraemon.github.io">
-        <img src="https://hiraemon.github.io/images/avatar.png?v=1565163281568" class="site-logo">
+        <img src="https://hiraemon.github.io/images/avatar.png?v=1565163910577" class="site-logo">
         <h1 class="site-title">hiraemon</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -95,17 +95,17 @@
             <h2 class="post-title">使用 github 作为远程 maven 仓库</h2>
             <div class="post-date">2019-08-07</div>
             
+              <div class="feature-container" style="background-image: url('http://hbimg.b0.upaiyun.com/bf45f2ce6e2c35e5c04c993f702ec8ccc34ca6613099d-MtfA96_fw658')">
+              </div>
+            
             <div class="post-content">
-              <h1 id="使用-github-作为远程-maven-仓库">使用 github 作为远程 maven 仓库</h1>
-<ol>
-<li>
+              <p>使用 github ,可以很方便的创建一个公开的 maven 仓库</p>
+<!-- more -->
 <h6 id="jar-包部署-maven-仓库-先将-jar-deploy-到本地">jar 包部署 maven 仓库 :  先将 jar deploy 到本地</h6>
 <blockquote>
 <p>maven 可以通过 http, ftp, ssh 等 deploy 到远程服务器，也可以 deploy 到本地文件系统里</p>
 <p>如果有多个jar 可以 deploy 到同一目录 push 到同一仓库</p>
 </blockquote>
-</li>
-</ol>
 <pre><code>mvn deploy:deploy-file \ 
  -Dmaven.test.skip=true \ 
  -Dfile=D:\alipay-sdk-java-3.7.110.ALL.jar \
@@ -116,11 +116,7 @@
  -DrepositoryId=marstark 
  -Durl=file://D:/maven-repo 
 </code></pre>
-<ol start="2">
-<li>
 <h6 id="推送到-github-仓库">推送到 github 仓库</h6>
-</li>
-</ol>
 <pre><code class="language-shell">cd /maven-repo
 git init
 git add .
@@ -129,11 +125,7 @@ git remote add origin https://github.com/xxx/maven-repo.git
 git add
 git push origin master
 </code></pre>
-<ol start="3">
-<li>
 <h6 id="如何使用">如何使用</h6>
-</li>
-</ol>
 <pre><code class="language-xml">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.alipay.sdk&lt;/groupId&gt;
@@ -160,7 +152,7 @@ git push origin master
     &lt;/repository&gt;
 &lt;/repositories&gt;	
 </code></pre>
-<h6 id="4-源码部署-maven-仓库">4. 源码部署 maven 仓库</h6>
+<h6 id="源码部署-maven-仓库">源码部署 maven 仓库</h6>
 <p>使用 maven 发布插件 <code>maven-deploy-plugin</code> 生成本地仓库文件</p>
 <blockquote>
 <p>pom.xml 中可以通过 ${} 语法取到相应属性值,如: ${project.build.directory}</p>
